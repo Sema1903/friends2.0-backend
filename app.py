@@ -24,7 +24,7 @@ def exercises():
         exes.append(i)
     #number = choice(exes)
     number = choice([0, 2, 1])
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * from exercises')
     records = cursor.fetchall()
@@ -37,7 +37,7 @@ def exercises():
 @app.route('/lent/', methods = ['GET'])
 def lent():
     abc = request.args.get('number', '') 
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     result = {}
     cursor.execute('SELECT * from lent')
@@ -60,7 +60,7 @@ def lent():
 @app.route('/publicate', methods = ['POST'])
 def publicate():
     new = request.json
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM lent')
     records = cursor.fetchall()
@@ -71,7 +71,7 @@ def publicate():
 @app.route('/sign', methods = ['POST'])
 def sign():
     new = request.json
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * from users')
     records = cursor.fetchall()
@@ -86,7 +86,7 @@ def sign():
 @app.route('/registration', methods = ['POST'])
 def registration():
     new = request.json
-    con = sl.connect('instance/exercises.db')
+    con = sl.connect('exercises.db')
     cursor = con.cursor()
     cursor.execute('SELECT * from users')
     records = cursor.fetchall()
@@ -105,7 +105,7 @@ def registration():
 @app.route('/plus_score', methods = ['POST'])
 def plus_score():
     new = request.json
-    con = sl.connect('instance/exercises.db')
+    con = sl.connect('exercises.db')
     cursor = con.cursor()
     cursor.execute('UPDATE users SET score = ? WHERE hash = ?', (int(new['score']) + 1, new['hash']))
     con.commit()
@@ -113,7 +113,7 @@ def plus_score():
 @app.route('/opti/', methods = ['GET'])
 def opti():
     abc = request.args.get('hash', '') 
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
@@ -127,7 +127,7 @@ def opti():
 @app.route('/acc/', methods = ['GET'])
 def acc():
     abc = request.args.get('hash', '')
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
@@ -141,7 +141,7 @@ def acc():
 @app.route('/pub/', methods = ['GET'])
 def pub():
     abc = request.args.get('id', '')
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
@@ -155,7 +155,7 @@ def pub():
 @app.route('/chat/', methods = ['GET'])
 def chat():
     abc = request.args.get('hash', '')
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
@@ -199,7 +199,7 @@ def chat():
 @app.route('/write/', methods = ['GET'])
 def write():
     abc = request.args.get('id', '').split('***')
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
@@ -227,7 +227,7 @@ def write():
 @app.route('/writes', methods = ['POST'])
 def writes():
     new = request.json
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
@@ -240,7 +240,7 @@ def writes():
 @app.route('/surch/', methods = ['GET'])
 def surch():
     abc = request.args.get('id', '')
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     here = False
@@ -255,7 +255,7 @@ def surch():
 @app.route('/iceberg/', methods = ['GET'])
 def iceberg():
     abc = request.args.get('hash', '')
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
@@ -269,7 +269,7 @@ def iceberg():
 @app.route('/buy', methods = ['POST'])
 def buy():
     new = request.json
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     transaction = 0
     for i in new['nft']:
@@ -301,7 +301,7 @@ def buy():
     return jsonify({'answer': 'yes'})
 @app.route('/preds', methods = ['GET'])
 def preds():
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM preds')
     records = cursor.fetchall()
@@ -317,7 +317,7 @@ def preds():
 def buyd():
     id_buyer = ''
     new = request.json
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
@@ -339,7 +339,7 @@ def buyd():
 @app.route('/reduct', methods = ['POST'])
 def reduct():
     new = request.json
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
@@ -362,7 +362,7 @@ def reduct():
 @app.route('/nft', methods = ['POST'])
 def nft():
     new = request.json
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
@@ -384,7 +384,7 @@ def nft():
 @app.route('/my_lent/', methods = ['GET'])
 def my_lent():
     abc = request.args.get('hash', '')
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
@@ -407,7 +407,7 @@ def my_lent():
 @app.route('/my_nft/', methods = ['GET'])
 def my_nft():
     abc = request.args.get('hash', '')
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
@@ -424,7 +424,7 @@ def my_nft():
 @app.route('/gift', methods = ['POST'])
 def gift():
     new = request.json
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     here = False
     cursor.execute('SELECT * FROM nft')
@@ -450,7 +450,7 @@ def gift():
 @app.route('/buy_nft', methods = ['POST'])
 def buy_nft():
     new = request.json
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
@@ -465,7 +465,7 @@ def buy_nft():
 @app.route('/gift_ice', methods = ['POST'])
 def gift_ice():
     new = request.json
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     here = False
     cursor.execute('SELECT * FROM users')
@@ -490,7 +490,7 @@ def gift_ice():
 @app.route('/account', methods = ['GET'])
 def account():
     abc = request.args.get('id', '')
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
@@ -500,7 +500,7 @@ def account():
 @app.route('/your_lent', methods = ['GET'])
 def your_lent():
     abc = request.args.get('id', '')
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
@@ -523,7 +523,7 @@ def your_lent():
 @app.route('/your_nft', methods = ['GET'])
 def your_nft():
     abc = request.args.get('id', '')
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM nft')
     records = cursor.fetchall()
@@ -535,7 +535,7 @@ def your_nft():
 @app.route('/friend', methods = ['POST'])
 def friend():
     new = request.json
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
@@ -549,7 +549,7 @@ def friend():
 @app.route('/yes_friend', methods = ['POST'])
 def yes_friend():
     new = request.json
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
@@ -568,7 +568,7 @@ def yes_friend():
 @app.route('/my_friends/', methods = ['GET'])
 def my_friends():
     abc = request.args.get('hash', '')
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     result = []
@@ -585,7 +585,7 @@ def my_friends():
 @app.route('/your_friends/', methods = ['GET'])
 def your_friends():
     abc = request.args.get('id', '')
-    con = sl.connect('instance/exercises.db', check_same_thread = False)
+    con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM users')
     result = []
