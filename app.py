@@ -5,6 +5,17 @@ from random import choice, randint
 app = Flask(__name__)
 cors = CORS(app)
 lessons = {0: 12, 1: 26, 2: 21, 3: 16, 4: 23, 5: 21, 6: 20, 7: 12, 8: 28, 9: 10}
+con = sl.connect('exrcises.db', check_same_thread = False)
+con.execute('CREATE TABLE users (name TEXT, email TEXT, password INT, score INT, avatar TEXT, id TEXT, about TEXT, balance INT, hash INT, friends TEXT)')
+con.execute('CREATE TABLE exercises(id TEXT, text TEXT, correct TEXT, image TEXT, score INT);')
+con.execute('CREATE TABLE lent(id TEXT, text TEXT, file TEXT, ip INT, likes INT);')
+con.execute('CREATE TABLE chats(autor_id TEXT, giver_id TEXT, text TEXT, file TEXT, read TEXT, special TEXT);')
+con.execute('CREATE TABLE preds(id TEXT, how INT, sum INT, number TEXT, nft TEXT, ip INT);')
+con.execute('CREATE TABLE nft(ip TEXT, owner TEXT, creator TEXT, nft TEXT, cost INT);')
+con.execute('CREATE TABLE price(id INT, price TEXT);')
+con.execute('INSERT INTO price(id, price) VALUES(?, ?);', (1, '2'))
+con.execute('INSERT INTO users(name, email, password, score, avatar, id, about, balance, hash, friends) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', ('Sophie', 'snizovev@bk.ru', 7.091877390753255e+25, 0, '', 'sophie', 'Твой ассистент в социальной сети Друзья 2.0', 1000000, 4.595536549208109e+28, ''))
+con.commit()
 @app.route('/exercises/', methods = ['GET'])
 def exercises():
     exes = []
