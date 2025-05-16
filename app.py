@@ -6,8 +6,6 @@ from flask_cors import CORS
 import sqlite3 as sl
 from random import randint
 import requests
-import sqlite3 as sl
-import matplotlib.pyplot as plot
 con = sl.connect('./exercises.db', check_same_thread = False)
 cursor = con.cursor()
 #cursor.execute('DROP TABLE users')
