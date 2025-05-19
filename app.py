@@ -8,15 +8,15 @@ from random import randint
 import requests
 con = sl.connect('./exercises.db', check_same_thread = False)
 cursor = con.cursor()
-#cursor.execute('DROP TABLE users')
-#cursor.execute('DROP TABLE lent')
-#cursor.execute('DROP TABLE chats')
-#cursor.execute('DROP TABLE price')
+cursor.execute('DROP TABLE users')
+cursor.execute('DROP TABLE lent')
+cursor.execute('DROP TABLE chats')
+cursor.execute('DROP TABLE price')
 
 #эмитатор
-#cursor.execute('DROP TABLE balances')
-#cursor.execute('DROP TABLE nfts')
-#cursor.execute('DROP TABLE preds')
+cursor.execute('DROP TABLE balances')
+cursor.execute('DROP TABLE nfts')
+cursor.execute('DROP TABLE preds')
 
 
 con.execute('CREATE TABLE users (name TEXT, email TEXT, password INT, avatar TEXT, id TEXT, about TEXT, hash INT, friends TEXT)')
@@ -31,7 +31,7 @@ con.execute('CREATE TABLE preds (token FLOAT, owner FLOAT, creator TEXT, cost IN
 con.execute('INSERT INTO balances (hash, balance) VALUES (?, ?)', (6.574042824760661e+28, 1000000))
 
 
-con.execute('INSERT INTO price(id, price) VALUES(?, ?);', (1, '2'))
+con.execute('INSERT INTO price(id, price) VALUES(?, ?);', (1, '2.0'))
 con.execute('INSERT INTO users(name, email, password, avatar, id, about, hash, friends) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', ('Sophie', 'krismironova04@mail.ru', 1.0672147442793281e+26, '', 'Sophie', 'Твой друг и помощник в социальной сети Друзья 2.0', 6.574042824760661e+28, ''))
 class Block:
     def __init__(self, index, transactions, previous_hash, nonce=0):
