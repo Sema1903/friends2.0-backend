@@ -19,9 +19,9 @@ cursor = con.cursor()
 #cursor.execute('DROP TABLE preds')
 
 
-con.execute('CREATE TABLE users (name TEXT, email TEXT, password INT, avatar TEXT, id TEXT, about TEXT, hash INT, friends TEXT)')
-con.execute('CREATE TABLE lent(id TEXT, text TEXT, file TEXT, ip INT, likes INT);')
-con.execute('CREATE TABLE chats(autor_id TEXT, giver_id TEXT, text TEXT, file TEXT, read TEXT, special TEXT);')
+con.execute('CREATE TABLE users (name TEXT, email TEXT, password INT, avatar TEXT, id TEXT, about TEXT, hash INT, friends TEXT, bans INT, status TEXT)')
+con.execute('CREATE TABLE lent(id TEXT, text TEXT, file TEXT, ip INT, likes INT, type TEXT)')
+con.execute('CREATE TABLE chats(autor_id TEXT, giver_id TEXT, text TEXT, file TEXT, read TEXT, special TEXT, type TEXT);')
 con.execute('CREATE TABLE price(id INT, price TEXT);')
 
 #эмитатор
@@ -31,8 +31,8 @@ con.execute('CREATE TABLE preds (token FLOAT, owner FLOAT, creator TEXT, cost IN
 con.execute('INSERT INTO balances (hash, balance) VALUES (?, ?)', (6.574042824760661e+28, 1000000))
 
 
-con.execute('INSERT INTO price(id, price) VALUES(?, ?);', (1, '2'))
-con.execute('INSERT INTO users(name, email, password, avatar, id, about, hash, friends) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', ('Sophie', 'krismironova04@mail.ru', 1.0672147442793281e+26, '', 'Sophie', 'Твой друг и помощник в социальной сети Друзья 2.0', 6.574042824760661e+28, ''))
+con.execute('INSERT INTO price(id, price) VALUES(?, ?);', (1, '2.0'))
+con.execute('INSERT INTO users(name, email, password, avatar, id, about, hash, friends, bans, status) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', ('Sophie', 'krismironova04@mail.ru', 1.0672147442793281e+26, '', 'Sophie', 'Твой друг и помощник в социальной сети Друзья 2.0', 6.574042824760661e+28, '', 0, 'active'))
 class Block:
     def __init__(self, index, transactions, previous_hash, nonce=0):
         self.index = index
