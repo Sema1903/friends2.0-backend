@@ -31,7 +31,7 @@ con.execute('CREATE TABLE preds (token FLOAT, owner FLOAT, creator TEXT, cost IN
 con.execute('INSERT INTO balances (hash, balance) VALUES (?, ?)', (6.574042824760661e+28, 1000000))
 
 
-con.execute('INSERT INTO price(id, price) VALUES(?, ?);', (1, '2.0'))
+con.execute('INSERT INTO price(id, price) VALUES(?, ?);', (1, '2'))
 con.execute('INSERT INTO users(name, email, password, avatar, id, about, hash, friends) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', ('Sophie', 'krismironova04@mail.ru', 1.0672147442793281e+26, '', 'Sophie', 'Твой друг и помощник в социальной сети Друзья 2.0', 6.574042824760661e+28, ''))
 class Block:
     def __init__(self, index, transactions, previous_hash, nonce=0):
@@ -48,14 +48,16 @@ class Blockchain:
         self.chain = []
         self.create_genesis_block()
         self.unconfirmed_transactions = []
-        self.nfts = {} 
+        self.nfts = {}  # Хранит NFT в формате {token_id: owner}
         self.chain = []
-        self.peers = set()  # Сетевые адреса других нод ('http://192.168.1.2:5000')
+        self.peers = set()  # Сетевые адреса других нод (например, "http://192.168.1.2:5000")
         self.create_genesis_block()
+
     def create_genesis_block(self):
         genesis_block = Block(0, [], "0")
         genesis_block.hash = genesis_block.compute_hash()
         self.chain.append(genesis_block)
+
     def add_block(self, block, proof):
         previous_hash = self.last_block.hash
         if previous_hash != block.previous_hash:
@@ -65,17 +67,26 @@ class Blockchain:
         block.hash = proof
         self.chain.append(block)
         return True
+
     def is_valid_proof(self, block, block_hash):
         return block_hash.startswith('0000')  # Простое PoW
+
     def mine(self):
         if not self.unconfirmed_transactions:
             return False
+
         last_block = self.last_block
-        new_block = Block(index=last_block.index + 1, transactions=self.unconfirmed_transactions, previous_hash=last_block.hash)
+        new_block = Block(
+            index=last_block.index + 1,
+            transactions=self.unconfirmed_transactions,
+            previous_hash=last_block.hash
+        )
+
         proof = self.proof_of_work(new_block)
         self.add_block(new_block, proof)
         self.unconfirmed_transactions = []
         return new_block.index
+
     def proof_of_work(self, block):
         block.nonce = 0
         computed_hash = block.compute_hash()
@@ -83,15 +94,24 @@ class Blockchain:
             block.nonce += 1
             computed_hash = block.compute_hash()
         return computed_hash
+
     @property
     def last_block(self):
         return self.chain[-1]
     def mint_nft(self, owner, token_id, metadata):
         if token_id in self.nfts:
-            return False
-        self.nfts[token_id] = {"owner": owner, "metadata": metadata}
-        self.unconfirmed_transactions.append({"type": "mint", "token_id": token_id, "owner": owner})
+            return False  # NFT уже существует
+        self.nfts[token_id] = {
+            "owner": owner,
+            "metadata": metadata  # Например, {"name": "My NFT", "image": "ipfs://..."}
+        }
+        self.unconfirmed_transactions.append({
+            "type": "mint",
+            "token_id": token_id,
+            "owner": owner
+        })
         return True
+
     def transfer_nft(self, sender, receiver, token_id):
         if token_id not in self.nfts:
             return False  # NFT не существует
@@ -99,20 +119,30 @@ class Blockchain:
             return False  # Неправильный владелец
         self.nfts[token_id]["owner"] = receiver
         self.nfts[token_id]['metadata']['status'] = 'no'
-        self.unconfirmed_transactions.append({"type": "transfer", "token_id": token_id, "from": sender, "to": receiver})
+        self.unconfirmed_transactions.append({
+            "type": "transfer",
+            "token_id": token_id,
+            "from": sender,
+            "to": receiver
+        })
         return True
     def register_peer(self, address):
+        """Добавляем новую ноду в сеть"""
         self.peers.add(address)
+
     def sync_chain(self):
+        """Синхронизация цепи с самой длинной версией из сети"""
         longest_chain = None
         max_length = len(self.chain)
+
         for peer in self.peers:
-            response = requests.get(f"{peer}/chain")
+            response = requests.get(f"{peer}/chain")  # Запрашиваем цепь у других нод
             if response.status_code == 200:
                 peer_chain = response.json()["chain"]
                 if len(peer_chain) > max_length and self.is_chain_valid(peer_chain):
                     max_length = len(peer_chain)
                     longest_chain = peer_chain
+
         if longest_chain:
             self.chain = longest_chain
             return True
@@ -120,7 +150,7 @@ class Blockchain:
     def proof_of_work(self, block):
         block.nonce = 0
         computed_hash = block.compute_hash()
-        while not computed_hash.startswith('0000'):
+        while not computed_hash.startswith('0000'):  # Хеш должен начинаться с 4 нулей
             block.nonce += 1
             computed_hash = block.compute_hash()
         return computed_hash
@@ -128,7 +158,7 @@ class Blockchain:
         for i in range(1, len(chain)):
             if chain[i]["previous_hash"] != chain[i-1]["hash"]:
                 return False
-            if not chain[i]["hash"].startswith('0000'): 
+            if not chain[i]["hash"].startswith('0000'):  # Проверка PoW
                 return False
         return True
 app = Flask(__name__)
@@ -155,7 +185,7 @@ def lent():
                         autor = row1[0]
                         avatar = row1[3]
                         id = row1[4]
-                        result = {'number': row[3], 'autor': autor, 'text': row[1], 'avatar': avatar, 'file': row[2], 'id': id, 'likes': row[4]}
+                        result = {'number': row[3], 'autor': autor, 'text': row[1], 'avatar': avatar, 'file': row[2], 'id': id, 'likes': row[4], 'type': row[5]}
     return jsonify(result)
 @app.route('/publicate', methods = ['POST'])
 def publicate():
@@ -164,7 +194,7 @@ def publicate():
     cursor = con.cursor()
     cursor.execute('SELECT * FROM lent')
     records = cursor.fetchall()
-    cursor.execute('INSERT INTO lent (id, text, file, ip, likes) VALUES (?, ?, ?, ?, ?)', (new['hash'], new['text'], new['file'], len(records)+1, 0))
+    cursor.execute('INSERT INTO lent (id, text, file, ip, likes, type) VALUES (?, ?, ?, ?, ?, ?)', (new['hash'], new['text'], new['file'], len(records)+1, 0, new['type']))
     con.commit()
     con.close()
     return jsonify({'answer': 'yes'})
@@ -178,9 +208,12 @@ def sign():
     here = False
     user = {}
     for row in records:
-        if row[1] == new['email'] and row[2] == new['password']:
+        if row[1] == new['email'] and row[2] == new['password'] and row[9] == 'active':
             here = True
             return jsonify({'answer': 'correct', 'hash': row[6]})
+        elif row[1] == new['email'] and row[2] == new['password'] and row[9] == 'baned':
+            here = True
+            return jsonify({'answer': 'baned'})
     if not here:
         return jsonify({'answer': 'incorrect'})
 @app.route('/registration', methods = ['POST'])
@@ -199,7 +232,7 @@ def registration():
     if here:
         return jsonify({'answer': 'no'})
     else:
-        cursor.execute('INSERT INTO users (name, email, password, avatar, id, about, hash, friends) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', (new['name'], new['email'], new['password'], new['avatar'], new['id'], new['about'], new['hash'], ''))
+        cursor.execute('INSERT INTO users (name, email, password, avatar, id, about, hash, friends, bans, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (new['name'], new['email'], new['password'], new['avatar'], new['id'], new['about'], new['hash'], '', 0, 'active'))
         con.commit()        
         return jsonify({'answer': 'yes'})
 @app.route('/opti/', methods = ['GET'])
@@ -292,9 +325,9 @@ def write():
     for row in records:
         if (row[0] == abc[1] or row[0] == giver_id) and (row[1] == abc[1] or row[1] == giver_id):
             if row[0] == giver_id:
-                results['messages'].append({'autor_id': abc[0], 'text': row[2], 'file': row[3], 'special': row[5]})
+                results['messages'].append({'autor_id': abc[0], 'text': row[2], 'file': row[3], 'special': row[5], 'type': row[6]})
             else:
-                results['messages'].append({'author_id': abc[1], 'text': row[2], 'file': row[3], 'special': row[5]})
+                results['messages'].append({'author_id': abc[1], 'text': row[2], 'file': row[3], 'special': row[5], 'type': row[6]})
     cursor.execute('SELECT * FROM users')
     records = cursor.fetchall()
     for row in records:
@@ -312,7 +345,7 @@ def writes():
     for row in records:
         if str(row[6]) == new['autor_id']:
             autor_id = row[4]
-    cursor.execute('INSERT INTO chats(autor_id, giver_id, text, file, read, special) VALUES(?, ?, ?, ?, ?, ?);', (autor_id, new['giver_id'], new['text'], new['file'], 'no', 'no'))
+    cursor.execute('INSERT INTO chats(autor_id, giver_id, text, file, read, special, type) VALUES(?, ?, ?, ?, ?, ?, ?);', (autor_id, new['giver_id'], new['text'], new['file'], 'no', 'no', new['type']))
     con.commit()
     return jsonify({'answer': 'yes'})
 @app.route('/surch/', methods = ['GET'])
@@ -358,7 +391,7 @@ def iceberg():
                     elif k == token and blockchain.nfts[k]['metadata']['nft'] != '':
                         result -= int(blockchain.nfts[k]['metadata']['how'])'''
     
-    #резерв
+    #эмитатор
     con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     here = False
@@ -462,7 +495,7 @@ def friend():
         if str(row[6]) == new['hash']:
             id = row[4]
             file = row[3]
-    cursor.execute('INSERT INTO chats(autor_id, giver_id, text, file, read, special) VALUES(?, ?, ?, ?, ?, ?)', (id, new['id'], 'Пользователь ' + new['id'] + ' хочет добавить тебя в друзья. Добавить?', file, 'no', 'friend'))
+    cursor.execute('INSERT INTO chats(autor_id, giver_id, text, file, read, special) VALUES(?, ?, ?, ?, ?, ?)', (id, new['id'], 'Пользователь ' + id + ' хочет добавить тебя в друзья. Добавить?', file, 'no', 'friend'))
     con.commit()
     return jsonify({'answer': 'yes'})
 @app.route('/yes_friend', methods = ['POST'])
@@ -564,7 +597,7 @@ def mint_nft():
     if not success:
         return "NFT already exists", 400'''
     
-    #резерв
+    #эмитатор
     balance = 0
     con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
@@ -627,7 +660,7 @@ def transfer_nft():
     if not success:
         return "Transfer failed", 400'''
     
-    #резерв
+    #эмитатор
     balance_receiver = 0
     con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
@@ -658,7 +691,7 @@ def get_all_nfts():
         if blockchain.nfts[i]['metadata']['status'] == 'sale':
             result.update({i: blockchain.nfts[i]})'''
     
-    #резерв
+    #эмитатор
     con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM preds')
@@ -692,7 +725,7 @@ def my_nft():
             result.append({'nft': blockchain.nfts[i]['metadata']['nft'], 'creator': blockchain.nfts[i]['metadata']['creator'], 'cost': blockchain.nfts[i]['metadata']['how'], 'ip': i})'''
     
 
-    #резерв
+    #эмитатор
     con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     preds = []
@@ -743,7 +776,7 @@ def your_iceberg():
                     elif k == token and blockchain.nfts[k]['metadata']['nft'] != '':
                         result -= int(blockchain.nfts[k]['metadata']['how'])'''
     
-    #резерв
+    #эмитатор
     cursor.execute('SELECT * FROM balances')
     records = cursor.fetchall()
     for row in records:
@@ -768,7 +801,7 @@ def your_nft():
             result.append({'nft': blockchain.nfts[i]['metadata']['nft'], 'creator': blockchain.nfts[i]['metadata']['creator'], 'cost': blockchain.nfts[i]['metadata']['how'], 'ip': i})'''
     
 
-    #резерв
+    #эмитатор
     preds = []
     cursor.execute('SELECT * FROM preds')
     records = cursor.fetchall()
@@ -825,7 +858,7 @@ def gift_ice():
     blockchain.mint_nft(new['id_seller'], token, {'how': new['how'], 'nft': '', 'sum': 0, 'number': '', 'status': 'sale', 'creator': 'friends2.0'})
     blockchain.transfer_nft(new['id_seller'], str(reciever), token)'''
 
-    #резерв
+    #эмитатор
     cursor.execute('SELECT * FROM balances')
     records = cursor.fetchall()
     for row in records:
@@ -849,7 +882,7 @@ def buy_nft():
     '''blockchain.nfts[new['ip']]['metadata']['how'] = new['how']
     blockchain.nfts[new['ip']]['metadata']['status'] = 'sale'''
 
-    #резерв
+    #эмитатор
     con = sl.connect('exercises.db', check_same_thread = False)
     cursor = con.cursor()
     cursor.execute('SELECT * FROM nfts')
@@ -876,7 +909,7 @@ def gift():
             autor = row[4]
     '''blockchain.nfts[new['number']]['owner'] = receiver'''
 
-    #резерв
+    #эмитатор
     cursor.execute('UPDATE nfts SET owner = ? WHERE token = ?', (receiver, new['number']))
     cursor.execute('SELECT * FROM nfts')
     records = cursor.fetchall()
@@ -885,13 +918,28 @@ def gift():
             nft = row[4]
 
     
-    '''cursor.execute('INSERT INTO chats (autor_id, giver_id, text, file, read, special) VALUES (?, ?, ?, ?, ?, ?)', (autor, new['adress'], 'Вам подарен подарок!', blockchain.nfts[new['number']]['metadata']['nft'], 'no', 'no'))'''
+    '''cursor.execute('INSERT INTO chats (autor_id, giver_id, text, file, read, special) VALUES (?, ?, ?, ?, ?, ?)', (autor, new['adress'], 'Вам подарен подарок!', blockchain.nfts[new['number']]['metadata']['nft'], 'no', 'nft'))'''
 
-    #резерв
-    cursor.execute('INSERT INTO chats (autor_id, giver_id, text, file, read, special) VALUES (?, ?, ?, ?, ?, ?)', (autor, new['adress'], 'Вам подарен подарок!', nft, 'no', 'no'))
+    #эмитатор
+    cursor.execute('INSERT INTO chats (autor_id, giver_id, text, file, read, special) VALUES (?, ?, ?, ?, ?, ?)', (autor, new['adress'], 'Вам подарен подарок!', nft, 'no', 'nft'))
 
     
     con.commit()
     return jsonify({'answer': 'yes'})
+@app.route('/bans', methods = ['POST'])
+def bans():
+    new = request.json
+    con = sl.connect('exercises.db', check_same_thread = False)
+    cursor = con.cursor()
+    bans = 0
+    cursor.execute('SELECT * FROM users')
+    records = cursor.fetchall()
+    for row in records:
+        if row[4] == new['id']:
+            bans = row[8]
+    cursor.execute('UPDATE users SET bans = ? WHERE id = ?', (bans + 1, new['id']))
+    cursor.execute('INSERT INTO chats (autor_id, giver_id, text, file, read, special) VALUES (?, ?, ?, ?, ?, ?)', ('Sophie', new['id'], 'На тебя подана жалоба. После рассмотрения это модераторами ты можешь быть заблокирован', '', 'no', 'bans'))
+    con.commit()
+    return jsonify({'OK': 200})
 if __name__ == '__main__':
     app.run(debug = False, host = '0.0.0.0')
