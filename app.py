@@ -8,15 +8,15 @@ from random import randint
 import requests
 con = sl.connect('./exercises.db', check_same_thread = False)
 cursor = con.cursor()
-cursor.execute('DROP TABLE users')
-cursor.execute('DROP TABLE lent')
-cursor.execute('DROP TABLE chats')
-cursor.execute('DROP TABLE price')
+#cursor.execute('DROP TABLE users')
+#cursor.execute('DROP TABLE lent')
+#cursor.execute('DROP TABLE chats')
+#cursor.execute('DROP TABLE price')
 
 #эмитатор
-cursor.execute('DROP TABLE balances')
-cursor.execute('DROP TABLE nfts')
-cursor.execute('DROP TABLE preds')
+#cursor.execute('DROP TABLE balances')
+#cursor.execute('DROP TABLE nfts')
+#cursor.execute('DROP TABLE preds')
 
 
 con.execute('CREATE TABLE users (name TEXT, email TEXT, password INT, avatar TEXT, id TEXT, about TEXT, hash INT, friends TEXT)')
