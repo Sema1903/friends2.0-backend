@@ -1,3 +1,4 @@
+!pip install flask-cors
 from flask import Flask, request, jsonify
 import hashlib
 import json
@@ -171,7 +172,7 @@ class Blockchain:
                 return False
         return True
 app = Flask(__name__)
-cors = CORS(app)
+CORS(app)
 blockchain = Blockchain()
 blockchain.mint_nft('3.0211397684608867e+28', '1', {'how': '1000000', 'sum': '0', 'number': '', 'nft': '', 'status': 'no'})
 @app.route('/lent/', methods = ['GET'])
