@@ -41,7 +41,7 @@ con.execute('INSERT INTO balances (hash, balance) VALUES (?, ?)', (6.57404282476
 
 con.execute('INSERT INTO price(id, price) VALUES(?, ?);', (1, '2.0'))
 con.execute('INSERT INTO users(name, email, password, avatar, id, about, hash, friends, bans, status) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', ('Sophie', 'krismironova04@mail.ru', 1.0672147442793281e+26, '', 'Sophie', 'Твой друг и помощник в социальной сети Друзья 2.0', 6.574042824760661e+28, '', 0, 'active'))
-#con.commit()
+con.commit()
 class Block:
     def __init__(self, index, transactions, previous_hash, nonce=0):
         self.index = index
