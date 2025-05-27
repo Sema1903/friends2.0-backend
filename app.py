@@ -18,21 +18,29 @@ cursor = con.cursor()
 #cursor.execute('DROP TABLE nfts')
 #cursor.execute('DROP TABLE preds')
 
-
-#con.execute('CREATE TABLE users (name TEXT, email TEXT, password INT, avatar TEXT, id TEXT, about TEXT, hash INT, friends TEXT, bans INT, status TEXT)')
-#con.execute('CREATE TABLE lent(id TEXT, text TEXT, file TEXT, ip INT, likes INT, type TEXT)')
-#con.execute('CREATE TABLE chats(autor_id TEXT, giver_id TEXT, text TEXT, file TEXT, read TEXT, special TEXT, type TEXT);')
-#con.execute('CREATE TABLE price(id INT, price TEXT);')
+cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+tables = cursor.fetchall()
+if 'users' not in tables:
+    con.execute('CREATE TABLE users (name TEXT, email TEXT, password INT, avatar TEXT, id TEXT, about TEXT, hash INT, friends TEXT, bans INT, status TEXT)')
+if 'lent' not in tables:
+    con.execute('CREATE TABLE lent(id TEXT, text TEXT, file TEXT, ip INT, likes INT, type TEXT)')
+if 'chats' not in tables:
+    con.execute('CREATE TABLE chats(autor_id TEXT, giver_id TEXT, text TEXT, file TEXT, read TEXT, special TEXT, type TEXT);')
+if 'price' not in tables:
+    con.execute('CREATE TABLE price(id INT, price TEXT);')
 
 #эмитатор
-#con.execute('CREATE TABLE balances (hash FLOAT, balance INT);')
-#con.execute('CREATE TABLE nfts (token FLOAT, owner FLOAT, creator TEXT, cost INT, nft TEXT);')
-#con.execute('CREATE TABLE preds (token FLOAT, owner FLOAT, creator TEXT, cost INT, sum INT, nft TEXT)')
-#con.execute('INSERT INTO balances (hash, balance) VALUES (?, ?)', (6.574042824760661e+28, 1000000))
+if 'balances' not in tables:
+    con.execute('CREATE TABLE balances (hash FLOAT, balance INT);')
+if 'nfts' not in tables:
+    con.execute('CREATE TABLE nfts (token FLOAT, owner FLOAT, creator TEXT, cost INT, nft TEXT);')
+if 'preds' not in tables:
+    con.execute('CREATE TABLE preds (token FLOAT, owner FLOAT, creator TEXT, cost INT, sum INT, nft TEXT)')
+con.execute('INSERT INTO balances (hash, balance) VALUES (?, ?)', (6.574042824760661e+28, 1000000))
 
 
-#con.execute('INSERT INTO price(id, price) VALUES(?, ?);', (1, '2.0'))
-#con.execute('INSERT INTO users(name, email, password, avatar, id, about, hash, friends, bans, status) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', ('Sophie', 'krismironova04@mail.ru', 1.0672147442793281e+26, '', 'Sophie', 'Твой друг и помощник в социальной сети Друзья 2.0', 6.574042824760661e+28, '', 0, 'active'))
+con.execute('INSERT INTO price(id, price) VALUES(?, ?);', (1, '2.0'))
+con.execute('INSERT INTO users(name, email, password, avatar, id, about, hash, friends, bans, status) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', ('Sophie', 'krismironova04@mail.ru', 1.0672147442793281e+26, '', 'Sophie', 'Твой друг и помощник в социальной сети Друзья 2.0', 6.574042824760661e+28, '', 0, 'active'))
 #con.commit()
 class Block:
     def __init__(self, index, transactions, previous_hash, nonce=0):
