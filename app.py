@@ -6,6 +6,7 @@ from flask_cors import CORS
 import sqlite3 as sl
 from random import randint
 import requests
+from flask_talisman import Talisman
 con = sl.connect('./exercises.db', check_same_thread = False)
 cursor = con.cursor()
 #cursor.execute('DROP TABLE users')
@@ -172,6 +173,7 @@ class Blockchain:
         return True
 app = Flask(__name__)
 cors = CORS(app)
+Talisman(app, force_https=True)
 blockchain = Blockchain()
 blockchain.mint_nft('3.0211397684608867e+28', '1', {'how': '1000000', 'sum': '0', 'number': '', 'nft': '', 'status': 'no'})
 @app.route('/lent/', methods = ['GET'])
