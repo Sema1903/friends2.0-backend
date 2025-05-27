@@ -171,7 +171,7 @@ class Blockchain:
                 return False
         return True
 app = Flask(__name__)
-CORS(app)
+cors = CORS(app)
 blockchain = Blockchain()
 blockchain.mint_nft('3.0211397684608867e+28', '1', {'how': '1000000', 'sum': '0', 'number': '', 'nft': '', 'status': 'no'})
 @app.route('/lent/', methods = ['GET'])
@@ -951,4 +951,4 @@ def bans():
     con.commit()
     return jsonify({'OK': 200})
 if __name__ == '__main__':
-    app.run(debug = False, host = '0.0.0.0', ssl_context="adhoc")
+    app.run(debug = False, host = '0.0.0.0')
