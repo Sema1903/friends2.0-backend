@@ -20,21 +20,21 @@ cursor = con.cursor()
 
 cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
 tables = cursor.fetchall()
-if 'users' not in tables:
+if ('users', ) not in tables:
     con.execute('CREATE TABLE users (name TEXT, email TEXT, password INT, avatar TEXT, id TEXT, about TEXT, hash INT, friends TEXT, bans INT, status TEXT)')
-if 'lent' not in tables:
+if ('lent', ) not in tables:
     con.execute('CREATE TABLE lent(id TEXT, text TEXT, file TEXT, ip INT, likes INT, type TEXT)')
-if 'chats' not in tables:
+if ('chats', ) not in tables:
     con.execute('CREATE TABLE chats(autor_id TEXT, giver_id TEXT, text TEXT, file TEXT, read TEXT, special TEXT, type TEXT);')
-if 'price' not in tables:
+if ('price', ) not in tables:
     con.execute('CREATE TABLE price(id INT, price TEXT);')
 
 #эмитатор
-if 'balances' not in tables:
+if ('balances', ) not in tables:
     con.execute('CREATE TABLE balances (hash FLOAT, balance INT);')
-if 'nfts' not in tables:
+if ('nfts', ) not in tables:
     con.execute('CREATE TABLE nfts (token FLOAT, owner FLOAT, creator TEXT, cost INT, nft TEXT);')
-if 'preds' not in tables:
+if ('preds', ) not in tables:
     con.execute('CREATE TABLE preds (token FLOAT, owner FLOAT, creator TEXT, cost INT, sum INT, nft TEXT)')
 con.execute('INSERT INTO balances (hash, balance) VALUES (?, ?)', (6.574042824760661e+28, 1000000))
 
