@@ -195,7 +195,7 @@ def lent():
                         avatar = row1[3]
                         id = row1[4]
                         result = {'number': row[3], 'autor': autor, 'text': row[1], 'avatar': avatar, 'file': row[2], 'id': id, 'likes': row[4], 'type': row[5]}
-    return jsonify(result)
+    return jsonify(result).headers.add("Access-Control-Allow-Origin", "*").headers.add("Access-Control-Allow-Methods", "GET, POST")  
 @app.route('/publicate', methods = ['POST'])
 def publicate():
     new = request.json
