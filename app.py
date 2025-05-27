@@ -1,4 +1,3 @@
-!pip install flask-cors
 from flask import Flask, request, jsonify
 import hashlib
 import json
