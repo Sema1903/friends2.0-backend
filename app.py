@@ -456,7 +456,7 @@ def my_lent():
     records = cursor.fetchall()
     for row in records:
         if row[0] == abc:
-            result.append({'ip': row[3], 'autor': autor, 'text': row[1], 'avatar': avatar, 'file': row[2], 'id': id, 'likes': row[4]})
+            result.append({'ip': row[3], 'autor': autor, 'text': row[1], 'avatar': avatar, 'file': row[2], 'id': id, 'likes': row[4], 'type': row[5]})
     results = []
     for i in range(len(result) - 1, -1, -1):
         results.append(result[i])
@@ -488,7 +488,7 @@ def your_lent():
     records = cursor.fetchall()
     for row in records:
         if str(row[0]) == hash:
-            results.append({'number': row[3], 'autor': autor, 'text': row[1], 'avatar': avatar, 'file': row[2], 'likes': row[4]})
+            results.append({'number': row[3], 'autor': autor, 'text': row[1], 'avatar': avatar, 'file': row[2], 'likes': row[4], 'type': row[5]})
     result = []
     for i in range(len(results) - 1, -1, -1):
         result.append(results[i])
